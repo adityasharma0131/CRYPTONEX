@@ -1,0 +1,820 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>CryptoNex — Market Intelligence</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Outfit:wght@300;400;500;600;700&family=Space+Mono:wght@400;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div class="ambient-bg">
+      <div class="orb orb-1"></div>
+      <div class="orb orb-2"></div>
+      <div class="orb orb-3"></div>
+      <div class="noise-overlay"></div>
+      <div class="grid-overlay"></div>
+    </div>
+
+    <!-- Ticker Tape -->
+    <div class="ticker-wrap">
+      <div class="ticker-label">MARKETS</div>
+      <div class="ticker-track">
+        <div class="ticker-inner" id="tickerInner">
+          <span class="ticker-placeholder">Loading ticker…</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Header -->
+    <header>
+      <div class="logo-wrap">
+        <div class="logo-icon">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+            <path
+              d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"
+              stroke="currentColor"
+              stroke-width="2.2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+          </svg>
+        </div>
+        <div class="logo-text-wrap">
+          <span class="logo-text">CryptoNex</span>
+          <span class="logo-tagline">Market Intelligence</span>
+        </div>
+        <span class="logo-badge"><span class="live-dot"></span>LIVE</span>
+      </div>
+
+      <div class="header-right">
+        <div class="search-wrap">
+          <svg
+            class="search-icon"
+            width="14"
+            height="14"
+            viewBox="0 0 24 24"
+            fill="none"
+          >
+            <circle
+              cx="11"
+              cy="11"
+              r="8"
+              stroke="currentColor"
+              stroke-width="2"
+            />
+            <path
+              d="m21 21-4.35-4.35"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+            />
+          </svg>
+          <input
+            type="text"
+            id="search"
+            placeholder="Search coin or symbol…"
+            autocomplete="off"
+          />
+        </div>
+        <!-- Notification Bell -->
+        <div class="notif-wrap" id="notifWrap">
+          <button
+            class="notif-btn"
+            id="notifBtn"
+            onclick="toggleNotifPanel()"
+            title="Price Alerts"
+          >
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+              <path
+                d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              />
+              <path
+                d="M13.73 21a2 2 0 0 1-3.46 0"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              />
+            </svg>
+            <span class="notif-badge" id="notifBadge" style="display: none"
+              >0</span
+            >
+          </button>
+
+          <!-- Notification Panel -->
+          <div class="notif-panel" id="notifPanel">
+            <div class="notif-panel-header">
+              <div class="notif-panel-title">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
+                  <path
+                    d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  />
+                  <path
+                    d="M13.73 21a2 2 0 0 1-3.46 0"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  />
+                </svg>
+                Price Alerts
+              </div>
+              <button
+                class="notif-clear-all"
+                onclick="clearAllAlerts()"
+                id="clearAllBtn"
+                style="display: none"
+              >
+                Clear All
+              </button>
+            </div>
+
+            <!-- Create Alert Form -->
+            <div class="notif-create-form" id="notifCreateForm">
+              <div class="notif-form-label">
+                <svg width="11" height="11" viewBox="0 0 24 24" fill="none">
+                  <circle
+                    cx="12"
+                    cy="12"
+                    r="10"
+                    stroke="currentColor"
+                    stroke-width="2"
+                  />
+                  <line
+                    x1="12"
+                    y1="8"
+                    x2="12"
+                    y2="12"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                  />
+                  <line
+                    x1="12"
+                    y1="16"
+                    x2="12.01"
+                    y2="16"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                  />
+                </svg>
+                Create Price Alert
+              </div>
+              <div class="notif-form-row">
+                <div class="notif-select-wrap">
+                  <select id="alertCoinSelect" class="notif-select">
+                    <option value="">Select coin…</option>
+                  </select>
+                </div>
+              </div>
+              <div class="notif-form-row">
+                <div class="notif-condition-tabs" id="alertConditionTabs">
+                  <button
+                    class="cond-tab active"
+                    data-cond="above"
+                    onclick="setCondition('above', this)"
+                  >
+                    <svg width="10" height="10" viewBox="0 0 24 24" fill="none">
+                      <polyline
+                        points="18 15 12 9 6 15"
+                        stroke="currentColor"
+                        stroke-width="2.5"
+                        stroke-linecap="round"
+                      />
+                    </svg>
+                    Above
+                  </button>
+                  <button
+                    class="cond-tab"
+                    data-cond="below"
+                    onclick="setCondition('below', this)"
+                  >
+                    <svg width="10" height="10" viewBox="0 0 24 24" fill="none">
+                      <polyline
+                        points="6 9 12 15 18 9"
+                        stroke="currentColor"
+                        stroke-width="2.5"
+                        stroke-linecap="round"
+                      />
+                    </svg>
+                    Below
+                  </button>
+                </div>
+                <div class="notif-price-wrap">
+                  <span class="notif-price-prefix">$</span>
+                  <input
+                    type="number"
+                    id="alertPriceInput"
+                    class="notif-price-input"
+                    placeholder="0.00"
+                    step="any"
+                    min="0"
+                  />
+                </div>
+              </div>
+              <div
+                class="notif-form-row"
+                id="alertCurrentPriceRow"
+                style="display: none"
+              >
+                <span class="alert-current-label">Current:</span>
+                <span class="alert-current-price" id="alertCurrentPrice"
+                  >—</span
+                >
+              </div>
+              <button class="notif-create-btn" onclick="createAlert()">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none">
+                  <path
+                    d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  />
+                  <line
+                    x1="12"
+                    y1="2"
+                    x2="12"
+                    y2="4"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                  />
+                </svg>
+                Set Alert
+              </button>
+            </div>
+
+            <!-- Alerts List -->
+            <div class="notif-list-wrap">
+              <div class="notif-list-label">Active Alerts</div>
+              <div class="notif-list" id="notifList">
+                <div class="notif-empty" id="notifEmpty">
+                  <svg
+                    width="28"
+                    height="28"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    opacity="0.3"
+                  >
+                    <path
+                      d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"
+                      stroke="currentColor"
+                      stroke-width="1.5"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    />
+                    <path
+                      d="M13.73 21a2 2 0 0 1-3.46 0"
+                      stroke="currentColor"
+                      stroke-width="1.5"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    />
+                  </svg>
+                  <p>No alerts yet.<br />Set a price target above.</p>
+                </div>
+              </div>
+            </div>
+
+            <!-- Triggered Notifications History -->
+            <div
+              class="notif-history-wrap"
+              id="notifHistoryWrap"
+              style="display: none"
+            >
+              <div class="notif-list-label">
+                Notifications
+                <span class="notif-history-count" id="notifHistoryCount"
+                  >0</span
+                >
+              </div>
+              <div class="notif-history-list" id="notifHistoryList"></div>
+            </div>
+          </div>
+        </div>
+
+        <button class="refresh-btn" onclick="fetchCoins()">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none">
+            <path
+              d="M23 4v6h-6M1 20v-6h6"
+              stroke="currentColor"
+              stroke-width="2.2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+            <path
+              d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"
+              stroke="currentColor"
+              stroke-width="2.2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+          </svg>
+          Refresh
+        </button>
+        <button
+          class="theme-toggle"
+          id="themeToggle"
+          onclick="toggleTheme()"
+          title="Toggle theme"
+        >
+          <svg
+            class="icon-moon"
+            width="16"
+            height="16"
+            viewBox="0 0 24 24"
+            fill="none"
+          >
+            <path
+              d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+          </svg>
+          <svg
+            class="icon-sun"
+            width="16"
+            height="16"
+            viewBox="0 0 24 24"
+            fill="none"
+          >
+            <circle
+              cx="12"
+              cy="12"
+              r="5"
+              stroke="currentColor"
+              stroke-width="2"
+            />
+            <line
+              x1="12"
+              y1="1"
+              x2="12"
+              y2="3"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+            />
+            <line
+              x1="12"
+              y1="21"
+              x2="12"
+              y2="23"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+            />
+            <line
+              x1="4.22"
+              y1="4.22"
+              x2="5.64"
+              y2="5.64"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+            />
+            <line
+              x1="18.36"
+              y1="18.36"
+              x2="19.78"
+              y2="19.78"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+            />
+            <line
+              x1="1"
+              y1="12"
+              x2="3"
+              y2="12"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+            />
+            <line
+              x1="21"
+              y1="12"
+              x2="23"
+              y2="12"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+            />
+            <line
+              x1="4.22"
+              y1="19.78"
+              x2="5.64"
+              y2="18.36"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+            />
+            <line
+              x1="18.36"
+              y1="5.64"
+              x2="19.78"
+              y2="4.22"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+            />
+          </svg>
+        </button>
+      </div>
+    </header>
+    <!-- Stats -->
+    <section class="stats">
+      <div class="stat-card" style="--i: 0">
+        <div class="stat-accent-bar"></div>
+        <div class="stat-icon">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none">
+            <path
+              d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"
+              stroke="currentColor"
+              stroke-width="2"
+            />
+          </svg>
+        </div>
+        <div class="stat-body">
+          <div class="stat-label">Tracking</div>
+          <div class="stat-value" id="coinCount">—</div>
+          <div class="stat-sub">live coins</div>
+        </div>
+      </div>
+      <div class="stat-card" style="--i: 1">
+        <div class="stat-accent-bar green-bar"></div>
+        <div class="stat-icon green-icon">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none">
+            <polyline
+              points="22 7 13.5 15.5 8.5 10.5 2 17"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+            />
+            <polyline
+              points="16 7 22 7 22 13"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+            />
+          </svg>
+        </div>
+        <div class="stat-body">
+          <div class="stat-label">Gainers</div>
+          <div class="stat-value positive-text" id="gainerCount">—</div>
+          <div class="stat-sub">in top 100</div>
+        </div>
+      </div>
+      <div class="stat-card" style="--i: 2">
+        <div class="stat-accent-bar red-bar"></div>
+        <div class="stat-icon red-icon">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none">
+            <polyline
+              points="22 17 13.5 8.5 8.5 13.5 2 7"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+            />
+            <polyline
+              points="16 17 22 17 22 11"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+            />
+          </svg>
+        </div>
+        <div class="stat-body">
+          <div class="stat-label">Losers</div>
+          <div class="stat-value negative-text" id="loserCount">—</div>
+          <div class="stat-sub">in top 100</div>
+        </div>
+      </div>
+      <div class="stat-card" style="--i: 3">
+        <div class="stat-accent-bar"></div>
+        <div class="stat-icon">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none">
+            <line
+              x1="12"
+              y1="1"
+              x2="12"
+              y2="23"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+            />
+            <path
+              d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+            />
+          </svg>
+        </div>
+        <div class="stat-body">
+          <div class="stat-label">Total MCap</div>
+          <div class="stat-value" id="totalMcap">—</div>
+          <div class="stat-sub">USD</div>
+        </div>
+      </div>
+      <div class="stat-card" style="--i: 4">
+        <div class="stat-accent-bar"></div>
+        <div class="stat-icon">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none">
+            <circle
+              cx="12"
+              cy="12"
+              r="10"
+              stroke="currentColor"
+              stroke-width="2"
+            />
+            <polyline
+              points="12 6 12 12 16 14"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+            />
+          </svg>
+        </div>
+        <div class="stat-body">
+          <div class="stat-label">Auto-Refresh</div>
+          <div class="stat-value">30s</div>
+          <div class="stat-sub" id="lastUpdated">—</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Heatmap -->
+    <!-- ═══════════════════════════════════════════════════
+         MARKET OVERVIEW: Heatmap · Mini Charts · Gainers/Losers · News
+         ═══════════════════════════════════════════════════ -->
+    <section class="market-overview-section">
+      <div class="section-header">
+        <div class="section-title-group">
+          <span class="section-eyebrow">Real-Time Visualization</span>
+          <h2 class="section-title">Market Overview</h2>
+        </div>
+        <p class="section-desc">Heatmap · Top Coins · Gainers/Losers · News</p>
+      </div>
+
+      <!-- ROW 1: Heatmap + Mini Charts -->
+      <div class="overview-row-1">
+        <div class="overview-heatmap ov-card">
+          <div class="ov-card-label">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none">
+              <rect
+                x="3"
+                y="3"
+                width="7"
+                height="7"
+                rx="1"
+                stroke="currentColor"
+                stroke-width="2"
+              />
+              <rect
+                x="14"
+                y="3"
+                width="7"
+                height="7"
+                rx="1"
+                stroke="currentColor"
+                stroke-width="2"
+              />
+              <rect
+                x="3"
+                y="14"
+                width="7"
+                height="7"
+                rx="1"
+                stroke="currentColor"
+                stroke-width="2"
+              />
+              <rect
+                x="14"
+                y="14"
+                width="7"
+                height="7"
+                rx="1"
+                stroke="currentColor"
+                stroke-width="2"
+              />
+            </svg>
+            Market Heatmap
+          </div>
+          <div class="tradingview-widget-container heatmap-widget-wrap">
+            <div class="tradingview-widget-container__widget"></div>
+            <script
+              type="text/javascript"
+              src="https://s3.tradingview.com/external-embedding/embed-widget-crypto-coins-heatmap.js"
+              async
+            >
+              {"dataSource":"Crypto","blockSize":"market_cap_calc","blockColor":"24h_close_change|5","locale":"en","symbolUrl":"","colorTheme":"dark","hasTopBar":false,"isDataSetEnabled":false,"isZoomEnabled":true,"hasSymbolTooltip":true,"isMonoSize":false,"width":"100%","height":460}
+            </script>
+          </div>
+        </div>
+
+        <div class="mini-charts-col">
+          <div class="ov-card-label" style="margin-bottom: 12px">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none">
+              <polyline
+                points="22 12 18 12 15 21 9 3 6 12 2 12"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              />
+            </svg>
+            Top Coins — 7 Day
+          </div>
+          <div class="mini-charts-grid" id="miniChartsGrid">
+            <div class="mini-chart-skeleton"></div>
+            <div class="mini-chart-skeleton"></div>
+            <div class="mini-chart-skeleton"></div>
+            <div class="mini-chart-skeleton"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ROW 2: Gainers | Losers | News -->
+      <div class="overview-row-2">
+        <div class="ov-card gainers-card">
+          <div class="ov-card-label green-label">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none">
+              <polyline
+                points="22 7 13.5 15.5 8.5 10.5 2 17"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+              />
+              <polyline
+                points="16 7 22 7 22 13"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+              />
+            </svg>
+            Top Gainers <span class="label-badge label-badge-green">24h</span>
+          </div>
+          <div class="movers-list" id="gainersList">
+            <div class="mover-skeleton"></div>
+            <div class="mover-skeleton"></div>
+            <div class="mover-skeleton"></div>
+            <div class="mover-skeleton"></div>
+            <div class="mover-skeleton"></div>
+          </div>
+        </div>
+
+        <div class="ov-card losers-card">
+          <div class="ov-card-label red-label">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none">
+              <polyline
+                points="22 17 13.5 8.5 8.5 13.5 2 7"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+              />
+              <polyline
+                points="16 17 22 17 22 11"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+              />
+            </svg>
+            Top Losers <span class="label-badge label-badge-red">24h</span>
+          </div>
+          <div class="movers-list" id="losersList">
+            <div class="mover-skeleton"></div>
+            <div class="mover-skeleton"></div>
+            <div class="mover-skeleton"></div>
+            <div class="mover-skeleton"></div>
+            <div class="mover-skeleton"></div>
+          </div>
+        </div>
+
+        <div class="ov-card news-card">
+          <div class="ov-card-label">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none">
+              <path
+                d="M4 22h16a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v16a2 2 0 0 1-2 2Zm0 0a2 2 0 0 1-2-2v-9c0-1.1.9-2 2-2h2"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              />
+            </svg>
+            Latest Crypto News
+          </div>
+          <div class="news-widget-wrap">
+            <div class="tradingview-widget-container" style="height: 100%">
+              <div class="tradingview-widget-container__widget"></div>
+              <script
+                type="text/javascript"
+                src="https://s3.tradingview.com/external-embedding/embed-widget-timeline.js"
+                async
+              >
+                {"displayMode":"regular","feedMode":"all_symbols","colorTheme":"dark","isTransparent":true,"locale":"en","width":"100%","height":"100%"}
+              </script>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Table -->
+    <section class="table-section">
+      <div class="section-header">
+        <div class="section-title-group">
+          <span class="section-eyebrow">Live Market Data</span>
+          <h2 class="section-title">All Coins</h2>
+        </div>
+        <p class="section-desc">
+          Hover for quick stats · Click for full analysis
+        </p>
+      </div>
+      <div class="table-container">
+        <table id="cryptoTable">
+          <thead>
+            <tr>
+              <th class="th-rank">#</th>
+              <th>Coin</th>
+              <th>Price</th>
+              <th>24h %</th>
+              <th class="th-hide-sm">Market Cap</th>
+              <th class="th-hide-sm">Volume (24h)</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody id="cryptoBody">
+            <tr class="loading-row">
+              <td colspan="7">
+                <div class="loading-inner">
+                  <div class="loading-spinner"></div>
+                  <span>Fetching live market data…</span>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- Price Tooltip -->
+    <div class="price-tooltip" id="priceTooltip">
+      <div class="tooltip-header">
+        <img class="tooltip-img" id="tooltipImg" />
+        <div class="tooltip-identity">
+          <div class="tooltip-name" id="tooltipName"></div>
+          <div class="tooltip-sym" id="tooltipSym"></div>
+        </div>
+        <div class="tooltip-change-badge" id="tooltipChangeBadge"></div>
+      </div>
+      <div class="tooltip-price" id="tooltipPrice"></div>
+      <div class="tooltip-divider"></div>
+      <div class="tooltip-stats">
+        <div class="tooltip-stat">
+          <span class="tooltip-stat-label">Market Cap</span>
+          <span class="tooltip-stat-val" id="tooltipMcap"></span>
+        </div>
+        <div class="tooltip-stat">
+          <span class="tooltip-stat-label">Volume 24h</span>
+          <span class="tooltip-stat-val" id="tooltipVol"></span>
+        </div>
+        <div class="tooltip-stat">
+          <span class="tooltip-stat-label">Rank</span>
+          <span class="tooltip-stat-val" id="tooltipRank"></span>
+        </div>
+      </div>
+    </div>
+
+    <footer>
+      <div class="footer-inner">
+        <div class="footer-left">
+          <span class="footer-brand">CryptoNex</span>
+          <span class="footer-sep">·</span>
+          <span>Data by CoinGecko API &amp; TradingView</span>
+        </div>
+        <div class="footer-right">
+          <span class="footer-disclaimer">Not financial advice</span>
+        </div>
+      </div>
+    </footer>
+
+    <script src="script.js"></script>
+  </body>
+</html>
