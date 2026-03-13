@@ -97,11 +97,9 @@
         padding: 0;
         box-sizing: border-box;
       }
-
       html {
         scroll-behavior: smooth;
       }
-
       body {
         background: var(--bg-base);
         color: var(--text-primary);
@@ -213,7 +211,7 @@
         }
       }
 
-      /* ── Ticker — FIX: seamless loop via duplicate content ── */
+      /* ── Ticker ── */
       .ticker-wrap {
         position: relative;
         z-index: 200;
@@ -271,8 +269,6 @@
       [data-theme="light"] .ticker-track::after {
         background: linear-gradient(-90deg, #1a1200, transparent);
       }
-
-      /* FIX: ticker-inner wraps two identical halves; animation scrolls exactly 50% */
       .ticker-inner {
         display: flex;
         align-items: center;
@@ -475,6 +471,46 @@
         display: block;
       }
 
+      /* ── FIX: Live data status indicator in header ── */
+      .data-status-badge {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        font-family: var(--font-mono);
+        font-size: 9px;
+        font-weight: 700;
+        letter-spacing: 0.12em;
+        padding: 4px 10px;
+        border-radius: 20px;
+        border: 1px solid var(--border);
+        color: var(--text-muted);
+        transition: all 0.3s;
+      }
+      .data-status-badge.fetching {
+        color: var(--accent);
+        background: var(--accent-subtle);
+        border-color: var(--accent-border);
+      }
+      .data-status-badge.live {
+        color: var(--green);
+        background: var(--green-dim);
+        border-color: var(--green-border);
+      }
+      .data-status-badge.error {
+        color: var(--red);
+        background: var(--red-dim);
+        border-color: var(--red-border);
+      }
+      .data-status-dot {
+        width: 5px;
+        height: 5px;
+        border-radius: 50%;
+        background: currentColor;
+      }
+      .data-status-badge.fetching .data-status-dot {
+        animation: livePulse 0.8s ease-in-out infinite;
+      }
+
       /* ── Page layout ── */
       .coin-page {
         position: relative;
@@ -484,7 +520,7 @@
         margin: 0 auto;
       }
 
-      /* ── Coin Header — FIX: added price & change display ── */
+      /* ── Coin Header ── */
       .coin-page-header {
         display: flex;
         align-items: center;
@@ -557,7 +593,6 @@
         border-radius: 4px;
       }
 
-      /* FIX: new price stats block in coin header */
       .coin-stats {
         display: flex;
         align-items: center;
@@ -583,7 +618,33 @@
         letter-spacing: 0.5px;
         line-height: 1;
         color: var(--text-primary);
+        transition: all 0.4s;
       }
+
+      /* FIX: Loading skeleton for price while fetching */
+      .stat-skeleton {
+        display: inline-block;
+        height: 26px;
+        width: 120px;
+        background: linear-gradient(
+          90deg,
+          var(--card-bg) 25%,
+          rgba(255, 255, 255, 0.06) 50%,
+          var(--card-bg) 75%
+        );
+        background-size: 200% 100%;
+        animation: shimmer 1.4s infinite;
+        border-radius: 4px;
+      }
+      @keyframes shimmer {
+        0% {
+          background-position: 200% 0;
+        }
+        100% {
+          background-position: -200% 0;
+        }
+      }
+
       .coin-stat-change {
         font-family: var(--font-mono);
         font-size: 12px;
@@ -609,6 +670,14 @@
         color: var(--accent);
         background: var(--accent-subtle);
         border: 1px solid var(--accent-border);
+      }
+
+      /* FIX: Volume stat */
+      .coin-stat-volume {
+        font-family: var(--font-mono);
+        font-size: 11px;
+        color: var(--text-secondary);
+        margin-top: 2px;
       }
 
       /* ── Section labels ── */
@@ -681,6 +750,39 @@
         }
       }
 
+      /* ── FIX: Data freshness banner ── */
+      .data-freshness-bar {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 8px 16px;
+        border-radius: 10px;
+        margin-bottom: 20px;
+        font-family: var(--font-mono);
+        font-size: 10px;
+        letter-spacing: 0.08em;
+        flex-wrap: wrap;
+        gap: 6px;
+      }
+      .data-freshness-bar.live {
+        background: var(--green-dim);
+        border: 1px solid var(--green-border);
+        color: var(--green);
+      }
+      .data-freshness-bar.stale {
+        background: var(--accent-subtle);
+        border: 1px solid var(--accent-border);
+        color: var(--accent);
+      }
+      .data-freshness-bar.error {
+        background: var(--red-dim);
+        border: 1px solid var(--red-border);
+        color: var(--red);
+      }
+      .data-freshness-bar.hidden {
+        display: none;
+      }
+
       /* ════════════════════════════
          AI ANALYSIS SECTION
          ════════════════════════════ */
@@ -694,7 +796,6 @@
         justify-content: space-between;
         margin-bottom: 18px;
       }
-
       .ai-card {
         background: var(--card-bg);
         border: 1px solid var(--border);
@@ -703,7 +804,6 @@
         backdrop-filter: blur(12px);
         position: relative;
       }
-      /* FIX: top scan-line uses background-size correctly */
       .ai-card::before {
         content: "";
         position: absolute;
@@ -777,11 +877,28 @@
         font-size: 20px;
         letter-spacing: 0.5px;
         color: var(--text-primary);
-        /* FIX: prevent overflow on small screens */
         overflow: hidden;
         text-overflow: ellipsis;
         white-space: nowrap;
       }
+
+      /* FIX: data status in AI topbar */
+      .ai-data-info {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        font-family: var(--font-mono);
+        font-size: 9px;
+        color: var(--text-muted);
+        letter-spacing: 0.06em;
+      }
+      .ai-data-info.ready {
+        color: var(--green);
+      }
+      .ai-data-info.stale {
+        color: var(--accent);
+      }
+
       .ai-refresh-btn {
         display: flex;
         align-items: center;
@@ -813,7 +930,6 @@
         animation: spin 0.8s linear infinite;
       }
 
-      /* FIX: no-token warning banner */
       .ai-token-warn {
         display: flex;
         align-items: center;
@@ -828,6 +944,20 @@
       }
       .ai-token-warn strong {
         font-weight: 700;
+      }
+
+      /* FIX: data warning when AI will use fallback values */
+      .ai-data-warn {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 10px 20px;
+        background: var(--accent-subtle);
+        border-bottom: 1px solid var(--accent-border);
+        font-family: var(--font-mono);
+        font-size: 10px;
+        color: var(--accent);
+        letter-spacing: 0.06em;
       }
 
       /* ── Loading state ── */
@@ -1026,23 +1156,17 @@
         display: flex;
         flex-direction: column;
       }
-
-      /* ── Row: Signal + Confidence + Risk + Momentum ── */
       .ai-row-top {
         display: grid;
         grid-template-columns: 1fr 1fr 1fr 1fr;
-        /* FIX: consistent border handling via outline approach */
       }
       .ai-row-top > * {
         padding: 20px 22px;
         border-bottom: 1px solid var(--border);
       }
-      /* FIX: right borders only between cells, not on last */
       .ai-row-top > *:not(:last-child) {
         border-right: 1px solid var(--border);
       }
-
-      /* ── Row: Predictions ── */
       .ai-row-predictions {
         display: grid;
         grid-template-columns: 1fr 1fr 1fr;
@@ -1056,8 +1180,6 @@
       .ai-row-predictions > *:not(:last-child) {
         border-right: 1px solid var(--border);
       }
-
-      /* ── Row: Chart + SR ── */
       .ai-row-chart {
         display: grid;
         grid-template-columns: 1fr 300px;
@@ -1069,8 +1191,6 @@
       .ai-row-chart > *:first-child {
         border-right: 1px solid var(--border);
       }
-
-      /* ── Row: Indicators ── */
       .ai-row-indicators {
         display: grid;
         grid-template-columns: 1fr 1fr;
@@ -1082,7 +1202,6 @@
         border-right: 1px solid var(--border);
       }
 
-      /* ── Cell labels ── */
       .ai-cell-label {
         font-family: var(--font-mono);
         font-size: 9px;
@@ -1096,7 +1215,6 @@
         gap: 6px;
       }
 
-      /* ── Sentiment / Signal ── */
       .sentiment-display {
         display: flex;
         align-items: center;
@@ -1146,7 +1264,6 @@
         margin-top: 2px;
       }
 
-      /* ── Trend pill ── */
       .trend-pill {
         display: inline-flex;
         align-items: center;
@@ -1175,7 +1292,6 @@
         border: 1px solid var(--accent-border);
       }
 
-      /* ── Confidence bar ── */
       .confidence-wrap {
         display: flex;
         flex-direction: column;
@@ -1208,7 +1324,6 @@
         font-family: var(--font-mono);
       }
 
-      /* ── Risk ── */
       .risk-wrap {
         display: flex;
         flex-direction: column;
@@ -1259,7 +1374,6 @@
         border-radius: 3px;
         transition: all 0.6s ease;
       }
-      /* FIX: use explicit heights as percentages of container */
       .risk-bar-seg.seg-1 {
         height: 33%;
         background: var(--green-border);
@@ -1287,7 +1401,6 @@
         opacity: 0.15;
       }
 
-      /* ── Volatility ── */
       .volatility-score {
         font-family: var(--font-display);
         font-size: 34px;
@@ -1318,7 +1431,6 @@
         background: linear-gradient(90deg, var(--accent), var(--red));
       }
 
-      /* ── Momentum Gauge ── */
       .momentum-wrap {
         display: flex;
         flex-direction: column;
@@ -1344,7 +1456,6 @@
         font-family: var(--font-mono);
       }
 
-      /* ── Prediction Cards ── */
       .pred-card-bg {
         position: absolute;
         top: 0;
@@ -1453,11 +1564,9 @@
         width: 0%;
       }
 
-      /* ── Price Prediction Chart (SVG) ── */
       .price-chart-wrap {
         position: relative;
       }
-      /* FIX: remove preserveAspectRatio=none; use responsive viewBox with padding */
       .price-chart-svg {
         width: 100%;
         height: auto;
@@ -1498,7 +1607,6 @@
         letter-spacing: 0.06em;
       }
 
-      /* ── Support / Resistance ── */
       .sr-list {
         display: flex;
         flex-direction: column;
@@ -1549,7 +1657,6 @@
         flex-shrink: 0;
       }
 
-      /* ── Indicator Strength Bars — FIX: corrected bearish positioning ── */
       .indicator-bar-list {
         display: flex;
         flex-direction: column;
@@ -1595,7 +1702,6 @@
       [data-theme="light"] .indicator-bar-track {
         background: rgba(0, 0, 0, 0.07);
       }
-      /* FIX: center line */
       .indicator-bar-center {
         position: absolute;
         top: 0;
@@ -1605,7 +1711,6 @@
         background: var(--border);
         z-index: 1;
       }
-      /* FIX: bullish bar extends right from center */
       .indicator-bar-fill {
         position: absolute;
         top: 0;
@@ -1618,7 +1723,6 @@
         left: 50%;
         background: linear-gradient(90deg, var(--green-border), var(--green));
       }
-      /* FIX: bearish bar extends left from center — use right anchor */
       .indicator-bar-fill.bearish {
         right: 50%;
         left: auto;
@@ -1642,7 +1746,6 @@
         color: var(--text-secondary);
       }
 
-      /* ── Indicator Chips ── */
       .indicators-grid {
         display: flex;
         flex-wrap: wrap;
@@ -1691,7 +1794,6 @@
         flex-shrink: 0;
       }
 
-      /* ── Summary ── */
       .ai-summary-text {
         font-size: 14px;
         color: var(--text-secondary);
@@ -1703,7 +1805,6 @@
         font-weight: 600;
       }
 
-      /* ── Cursor blink for typewriter ── */
       .typewriter-cursor {
         display: inline-block;
         width: 2px;
@@ -1723,7 +1824,6 @@
         }
       }
 
-      /* ── Idle state ── */
       .ai-idle-state {
         padding: 52px 24px;
         display: flex;
@@ -1796,14 +1896,11 @@
         opacity: 0.5;
       }
 
-      /* ════════════════════
-         RESPONSIVE
-         ════════════════════ */
+      /* ── Responsive ── */
       @media (max-width: 1100px) {
         .ai-row-top {
           grid-template-columns: 1fr 1fr;
         }
-        /* FIX: clean border reset for 2-col layout */
         .ai-row-top > * {
           border-right: none;
           border-bottom: 1px solid var(--border);
@@ -1819,7 +1916,6 @@
           border-bottom: 1px solid var(--border);
         }
       }
-
       @media (max-width: 900px) {
         .coin-page {
           padding: 0 20px;
@@ -1867,7 +1963,6 @@
           height: 440px;
         }
       }
-
       @media (max-width: 600px) {
         .ai-row-top {
           grid-template-columns: 1fr;
@@ -1888,6 +1983,9 @@
         .logo-badge {
           display: none;
         }
+        .data-status-badge span:last-child {
+          display: none;
+        }
       }
     </style>
   </head>
@@ -1899,7 +1997,6 @@
       <div class="grid-overlay"></div>
     </div>
 
-    <!-- FIX: ticker-inner built by JS with duplicated content for seamless loop -->
     <div class="ticker-wrap">
       <div class="ticker-label">MARKETS</div>
       <div class="ticker-track">
@@ -1927,6 +2024,11 @@
         <span class="logo-badge"><span class="live-dot"></span>LIVE</span>
       </div>
       <div class="header-right">
+        <!-- FIX: live data status badge in header -->
+        <div class="data-status-badge" id="dataStatusBadge">
+          <span class="data-status-dot"></span>
+          <span id="dataStatusText">LOADING</span>
+        </div>
         <a href="index.html" class="back-btn">
           <svg width="15" height="15" viewBox="0 0 24 24" fill="none">
             <path
@@ -2052,7 +2154,9 @@
     </header>
 
     <div class="coin-page">
-      <!-- FIX: coin header now shows price + 24h change -->
+      <!-- FIX: data freshness banner -->
+      <div class="data-freshness-bar hidden" id="dataFreshnessBanner"></div>
+
       <div class="coin-page-header">
         <div class="coin-identity">
           <div class="coin-img-wrap">
@@ -2063,6 +2167,13 @@
             <div class="coin-meta">
               <span class="coin-sym-pill" id="coinSymPill"></span>
               <span class="coin-exchange-pill">BINANCE</span>
+              <!-- FIX: last updated label -->
+              <span
+                class="coin-exchange-pill"
+                id="lastUpdatedPill"
+                style="display: none"
+                >⟳ —</span
+              >
             </div>
           </div>
         </div>
@@ -2070,7 +2181,10 @@
         <div class="coin-stats">
           <div class="coin-stat-item">
             <div class="coin-stat-label">Current Price</div>
-            <div class="coin-stat-value" id="coinPriceDisplay">—</div>
+            <!-- FIX: skeleton loader while fetching -->
+            <div class="coin-stat-value" id="coinPriceDisplay">
+              <span class="stat-skeleton"></span>
+            </div>
           </div>
           <div class="coin-stat-item">
             <div class="coin-stat-label">24h Change</div>
@@ -2083,7 +2197,24 @@
               style="font-size: 18px"
               id="coinMcapDisplay"
             >
-              —
+              <span
+                class="stat-skeleton"
+                style="width: 80px; height: 18px"
+              ></span>
+            </div>
+          </div>
+          <!-- FIX: volume display (new field) -->
+          <div class="coin-stat-item">
+            <div class="coin-stat-label">24h Volume</div>
+            <div
+              class="coin-stat-value"
+              style="font-size: 18px"
+              id="coinVolumeDisplay"
+            >
+              <span
+                class="stat-skeleton"
+                style="width: 80px; height: 18px"
+              ></span>
             </div>
           </div>
         </div>
@@ -2103,11 +2234,16 @@
         </div>
 
         <div class="ai-card" id="aiCard">
-          <!-- FIX: token warning shown when config is missing -->
           <div class="ai-token-warn" id="aiTokenWarn" style="display: none">
             ⚠ <strong>GITHUB_GPT_TOKEN not configured.</strong>&nbsp; Add it to
             config.js → <code>window.__ENV__.GITHUB_GPT_TOKEN</code> to enable
             AI analysis.
+          </div>
+          <!-- FIX: warn if analysis will run on fallback/stale data -->
+          <div class="ai-data-warn" id="aiDataWarn" style="display: none">
+            ⚡ <strong>Using URL params as fallback.</strong>&nbsp; Live market
+            data fetch failed — AI analysis may be less accurate. Refresh the
+            page to retry.
           </div>
 
           <div class="ai-topbar">
@@ -2117,29 +2253,58 @@
               </div>
               <span class="ai-topbar-title" id="aiAssetLabel">—</span>
             </div>
-            <button
-              class="ai-refresh-btn"
-              id="aiRefreshBtn"
-              onclick="runAiAnalysis()"
+            <div
+              style="
+                display: flex;
+                align-items: center;
+                gap: 10px;
+                flex-wrap: wrap;
+              "
             >
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
-                <path
-                  d="M23 4v6h-6M1 20v-6h6"
-                  stroke="currentColor"
-                  stroke-width="2"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                />
-                <path
-                  d="M3.51 9a9 9 0 0114.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0020.49 15"
-                  stroke="currentColor"
-                  stroke-width="2"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                />
-              </svg>
-              Analyse
-            </button>
+              <!-- FIX: show what data the AI will use -->
+              <div class="ai-data-info" id="aiDataInfo">
+                <svg width="10" height="10" viewBox="0 0 24 24" fill="none">
+                  <circle
+                    cx="12"
+                    cy="12"
+                    r="10"
+                    stroke="currentColor"
+                    stroke-width="2"
+                  />
+                  <path
+                    d="M12 8v4M12 16h.01"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                  />
+                </svg>
+                <span id="aiDataInfoText">Waiting for market data…</span>
+              </div>
+              <button
+                class="ai-refresh-btn"
+                id="aiRefreshBtn"
+                onclick="runAiAnalysis()"
+                disabled
+              >
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
+                  <path
+                    d="M23 4v6h-6M1 20v-6h6"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  />
+                  <path
+                    d="M3.51 9a9 9 0 0114.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0020.49 15"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  />
+                </svg>
+                Analyse
+              </button>
+            </div>
           </div>
 
           <div id="aiContentArea">
@@ -2147,9 +2312,9 @@
               <div class="ai-idle-emoji">🤖</div>
               <div class="ai-idle-title">Ready to Analyse</div>
               <div class="ai-idle-sub">
-                Click <strong style="color: var(--accent)">Analyse</strong> to
-                generate a full AI-powered market analysis with price
-                predictions.
+                Fetching live market data… Click
+                <strong style="color: var(--accent)">Analyse</strong> once data
+                loads.
               </div>
             </div>
           </div>
@@ -2185,10 +2350,12 @@
          ═══════════════════════════════════════════ */
       const GITHUB_GPT_TOKEN =
         (window.__ENV__ && window.__ENV__.GITHUB_GPT_TOKEN) || null;
-
       const GITHUB_MODELS_ENDPOINT =
         "https://models.inference.ai.azure.com/chat/completions";
       const GPT_MODEL = "gpt-4o";
+
+      /* CoinGecko free API — no key needed */
+      const COINGECKO_API = "https://api.coingecko.com/api/v3";
 
       /* ═══════════════════════════════════════════
          THEME
@@ -2207,17 +2374,313 @@
       }
 
       /* ═══════════════════════════════════════════
-         URL PARAMS
+         URL PARAMS — used as initial fallback values
          ═══════════════════════════════════════════ */
       const params = new URLSearchParams(window.location.search);
       const symbol = params.get("symbol") || "BTC";
       const coinName = params.get("name") || "Bitcoin";
       const image = params.get("image") || "";
-      const price = params.get("price") || "0";
-      const change = params.get("change") || "0";
-      const mcap = params.get("mcap") || "0";
 
-      /* populate static elements */
+      /* FIX: parse URL params into numbers immediately, with safe fallbacks */
+      const urlPrice = parseFloat(params.get("price")) || 0;
+      const urlChange = parseFloat(params.get("change")) || 0;
+      const urlMcap = parseFloat(params.get("mcap")) || 0;
+
+      /* ═══════════════════════════════════════════
+         FIX: LIVE MARKET DATA STATE
+         These are the single source of truth for all
+         price/change/mcap values used across the page.
+         ═══════════════════════════════════════════ */
+      const marketData = {
+        price: urlPrice, // live price (USD)
+        change: urlChange, // 24h change %
+        mcap: urlMcap, // market cap USD
+        volume: 0, // 24h volume USD (new)
+        high24h: 0, // 24h high
+        low24h: 0, // 24h low
+        source: "url", // 'url' | 'live'
+        lastFetch: null, // Date of last successful API fetch
+        fetchError: null, // last fetch error message if any
+      };
+
+      /* ═══════════════════════════════════════════
+         FIX: COINGECKO ID MAPPING
+         Maps ticker symbol → CoinGecko coin ID.
+         The free /coins/markets endpoint requires the CG id.
+         ═══════════════════════════════════════════ */
+      const SYMBOL_TO_CG_ID = {
+        BTC: "bitcoin",
+        ETH: "ethereum",
+        BNB: "binancecoin",
+        SOL: "solana",
+        XRP: "ripple",
+        ADA: "cardano",
+        DOGE: "dogecoin",
+        DOT: "polkadot",
+        MATIC: "matic-network",
+        AVAX: "avalanche-2",
+        LINK: "chainlink",
+        UNI: "uniswap",
+        LTC: "litecoin",
+        BCH: "bitcoin-cash",
+        ATOM: "cosmos",
+        ETC: "ethereum-classic",
+        XLM: "stellar",
+        ALGO: "algorand",
+        VET: "vechain",
+        FTM: "fantom",
+        SAND: "the-sandbox",
+        MANA: "decentraland",
+        SHIB: "shiba-inu",
+        TRX: "tron",
+        NEAR: "near",
+        ICP: "internet-computer",
+        FIL: "filecoin",
+        AAVE: "aave",
+        GRT: "the-graph",
+        MKR: "maker",
+        COMP: "compound-governance-token",
+        SNX: "havven",
+        CRV: "curve-dao-token",
+        SUSHI: "sushi",
+        YFI: "yearn-finance",
+        "1INCH": "1inch",
+        BAL: "balancer",
+        ZEC: "zcash",
+        DASH: "dash",
+        XMR: "monero",
+        EOS: "eos",
+        XTZ: "tezos",
+        NEO: "neo",
+        ONT: "ontology",
+        IOTA: "iota",
+        ZIL: "zilliqa",
+        WAVES: "waves",
+        HBAR: "hedera-hashgraph",
+        EGLD: "elrond-erd-2",
+        THETA: "theta-token",
+        CHZ: "chiliz",
+        ENJ: "enjincoin",
+        FLOW: "flow",
+        IMX: "immutable-x",
+        APE: "apecoin",
+        OP: "optimism",
+        ARB: "arbitrum",
+        SUI: "sui",
+        SEI: "sei-network",
+        TIA: "celestia",
+        INJ: "injective-protocol",
+        PEPE: "pepe",
+        WIF: "dogwifcoin",
+        BONK: "bonk",
+        TON: "the-open-network",
+        NOT: "notcoin",
+      };
+
+      /**
+       * FIX: Resolve CoinGecko coin ID from the symbol.
+       * Tries the mapping table first, then falls back to
+       * searching the CoinGecko /search endpoint.
+       */
+      async function resolveCoinGeckoId(sym) {
+        const upper = sym.toUpperCase();
+        if (SYMBOL_TO_CG_ID[upper]) return SYMBOL_TO_CG_ID[upper];
+
+        /* fallback: search by symbol */
+        try {
+          const res = await fetch(
+            `${COINGECKO_API}/search?query=${encodeURIComponent(sym)}`,
+            { signal: AbortSignal.timeout(6000) },
+          );
+          if (!res.ok) return sym.toLowerCase();
+          const data = await res.json();
+          const coin = (data.coins || []).find(
+            (c) => c.symbol.toUpperCase() === upper,
+          );
+          return coin ? coin.id : sym.toLowerCase();
+        } catch {
+          return sym.toLowerCase();
+        }
+      }
+
+      /* ═══════════════════════════════════════════
+         FIX: LIVE MARKET DATA FETCH
+         Fetches real price/change/mcap/volume from
+         CoinGecko's free /coins/markets endpoint.
+         Falls back gracefully to URL params on error.
+         ═══════════════════════════════════════════ */
+      let refreshTimer = null;
+
+      async function fetchLiveMarketData() {
+        setDataStatus("fetching");
+
+        try {
+          const cgId = await resolveCoinGeckoId(symbol);
+
+          const url = `${COINGECKO_API}/coins/markets?vs_currency=usd&ids=${encodeURIComponent(cgId)}&order=market_cap_desc&per_page=1&page=1&sparkline=false&price_change_percentage=24h`;
+
+          const res = await fetch(url, {
+            headers: { Accept: "application/json" },
+            signal: AbortSignal.timeout(10000), // 10s timeout
+          });
+
+          if (!res.ok) {
+            throw new Error(
+              `CoinGecko API error: ${res.status} ${res.statusText}`,
+            );
+          }
+
+          const data = await res.json();
+
+          if (!Array.isArray(data) || data.length === 0) {
+            throw new Error(`No market data found for ${symbol} (id: ${cgId})`);
+          }
+
+          const coin = data[0];
+
+          /* FIX: validate each field before storing — never store null/undefined */
+          marketData.price =
+            typeof coin.current_price === "number"
+              ? coin.current_price
+              : urlPrice;
+          marketData.change =
+            typeof coin.price_change_percentage_24h === "number"
+              ? coin.price_change_percentage_24h
+              : urlChange;
+          marketData.mcap =
+            typeof coin.market_cap === "number" ? coin.market_cap : urlMcap;
+          marketData.volume =
+            typeof coin.total_volume === "number" ? coin.total_volume : 0;
+          marketData.high24h =
+            typeof coin.high_24h === "number" ? coin.high_24h : 0;
+          marketData.low24h =
+            typeof coin.low_24h === "number" ? coin.low_24h : 0;
+          marketData.source = "live";
+          marketData.lastFetch = new Date();
+          marketData.fetchError = null;
+
+          /* update image if CG provides a better one */
+          if (coin.image && !image) {
+            document.getElementById("coinImage").src = coin.image;
+          }
+
+          setDataStatus("live");
+          updatePriceUI();
+          showFreshnessBanner("live");
+        } catch (err) {
+          console.warn("[CryptoNex] Market data fetch failed:", err.message);
+          marketData.fetchError = err.message;
+          marketData.source = "url";
+
+          /* keep existing values (URL params) — don't zero them out */
+          setDataStatus("error");
+          showFreshnessBanner("error", err.message);
+          updatePriceUI(); // still render with fallback values
+        }
+
+        /* FIX: enable Analyse button once we have data (live or fallback) */
+        enableAnalyseButton();
+      }
+
+      /* ═══════════════════════════════════════════
+         FIX: Update all price UI elements from marketData
+         ═══════════════════════════════════════════ */
+      function updatePriceUI() {
+        const { price, change, mcap, volume, lastFetch, source } = marketData;
+
+        /* Price */
+        const priceEl = document.getElementById("coinPriceDisplay");
+        priceEl.innerHTML = "";
+        priceEl.textContent = fmt(price);
+
+        /* 24h change */
+        const changeEl = document.getElementById("coinChangeDisplay");
+        const cSign = change >= 0 ? "+" : "";
+        const cClass = change > 0.05 ? "up" : change < -0.05 ? "dn" : "flat";
+        const cArrow = change > 0.05 ? "▲" : change < -0.05 ? "▼" : "→";
+        changeEl.textContent = `${cArrow} ${cSign}${change.toFixed(2)}%`;
+        changeEl.className = "coin-stat-change " + cClass;
+
+        /* Market cap */
+        const mcapEl = document.getElementById("coinMcapDisplay");
+        mcapEl.innerHTML = "";
+        mcapEl.textContent = fmtCompact(mcap);
+
+        /* Volume (new) */
+        const volEl = document.getElementById("coinVolumeDisplay");
+        volEl.innerHTML = "";
+        volEl.textContent = fmtCompact(volume) || "N/A";
+
+        /* Last updated pill */
+        if (lastFetch) {
+          const pill = document.getElementById("lastUpdatedPill");
+          pill.style.display = "inline-flex";
+          pill.textContent = `⟳ ${source === "live" ? "Live" : "Cached"} · ${lastFetch.toLocaleTimeString()}`;
+        }
+
+        /* Update AI data info text */
+        updateAiDataInfo();
+      }
+
+      /* ═══════════════════════════════════════════
+         FIX: Data status badge helpers
+         ═══════════════════════════════════════════ */
+      function setDataStatus(state) {
+        const badge = document.getElementById("dataStatusBadge");
+        const text = document.getElementById("dataStatusText");
+        badge.className = "data-status-badge " + state;
+        const labels = {
+          fetching: "FETCHING",
+          live: "LIVE DATA",
+          error: "FALLBACK",
+        };
+        text.textContent = labels[state] || state.toUpperCase();
+      }
+
+      function showFreshnessBanner(state, errMsg) {
+        const banner = document.getElementById("dataFreshnessBanner");
+        if (state === "live") {
+          banner.className = "data-freshness-bar live";
+          banner.innerHTML = `✓ Live market data loaded from CoinGecko · Updated ${marketData.lastFetch.toLocaleTimeString()} · Auto-refreshes every 60s`;
+        } else if (state === "error") {
+          banner.className = "data-freshness-bar stale";
+          banner.innerHTML = `⚡ Live fetch failed — using URL params as fallback. ${errMsg ? `<span style="opacity:.7">${errMsg.replace(/</g, "&lt;").slice(0, 80)}</span>` : ""} <button onclick="fetchLiveMarketData()" style="background:none;border:1px solid currentColor;color:inherit;padding:2px 8px;border-radius:4px;cursor:pointer;font-family:var(--font-mono);font-size:9px;margin-left:8px">RETRY</button>`;
+        }
+      }
+
+      function updateAiDataInfo() {
+        const info = document.getElementById("aiDataInfo");
+        const text = document.getElementById("aiDataInfoText");
+        const { source, price, lastFetch } = marketData;
+
+        if (source === "live" && price > 0) {
+          info.className = "ai-data-info ready";
+          text.textContent = `✓ Live data · $${fmt(price)} · ${lastFetch ? lastFetch.toLocaleTimeString() : ""}`;
+          /* hide data warning if live data succeeded */
+          document.getElementById("aiDataWarn").style.display = "none";
+        } else if (price > 0) {
+          info.className = "ai-data-info stale";
+          text.textContent = `⚡ Fallback data · $${fmt(price)}`;
+          document.getElementById("aiDataWarn").style.display = "flex";
+        } else {
+          info.className = "ai-data-info";
+          text.textContent = "No price data available";
+        }
+      }
+
+      function enableAnalyseButton() {
+        const btn = document.getElementById("aiRefreshBtn");
+        btn.disabled = false;
+        /* update idle state text */
+        const idle = document.querySelector(".ai-idle-sub");
+        if (idle) {
+          idle.innerHTML = `Click <strong style="color:var(--accent)">Analyse</strong> to generate a full AI-powered market analysis using ${marketData.source === "live" ? '<strong style="color:var(--green)">live</strong>' : '<strong style="color:var(--accent)">cached</strong>'} market data.`;
+        }
+      }
+
+      /* ═══════════════════════════════════════════
+         STATIC SETUP (runs immediately)
+         ═══════════════════════════════════════════ */
       document.getElementById("coinName").innerText = coinName;
       document.getElementById("coinImage").src = image;
       document.getElementById("coinImage").alt = coinName + " logo";
@@ -2226,39 +2689,12 @@
         coinName + " (" + symbol + ")";
       document.title = "CryptoNex — " + coinName;
 
-      /* FIX: populate price stats in header */
-      (function populateCoinStats() {
-        const priceEl = document.getElementById("coinPriceDisplay");
-        const changeEl = document.getElementById("coinChangeDisplay");
-        const mcapEl = document.getElementById("coinMcapDisplay");
-
-        const pNum = parseFloat(price);
-        const cNum = parseFloat(change);
-        const mNum = parseFloat(mcap);
-
-        priceEl.textContent = fmt(pNum);
-
-        const cSign = cNum >= 0 ? "+" : "";
-        const cClass = cNum > 0.05 ? "up" : cNum < -0.05 ? "dn" : "flat";
-        const cArrow = cNum > 0.05 ? "▲" : cNum < -0.05 ? "▼" : "→";
-        changeEl.textContent = cArrow + " " + cSign + cNum.toFixed(2) + "%";
-        changeEl.className = "coin-stat-change " + cClass;
-
-        if (mNum >= 1e9)
-          mcapEl.textContent = "$" + (mNum / 1e9).toFixed(2) + "B";
-        else if (mNum >= 1e6)
-          mcapEl.textContent = "$" + (mNum / 1e6).toFixed(2) + "M";
-        else if (mNum > 0) mcapEl.textContent = "$" + mNum.toLocaleString();
-        else mcapEl.textContent = "N/A";
-      })();
-
-      /* FIX: show token warning early so user knows before clicking */
       if (!GITHUB_GPT_TOKEN) {
         document.getElementById("aiTokenWarn").style.display = "flex";
       }
 
       /* ═══════════════════════════════════════════
-         TICKER — FIX: build duplicated content for seamless loop
+         FIX: TICKER — uses live coin data where available
          ═══════════════════════════════════════════ */
       const TICKER_COINS = [
         { sym: "BTC", price: 67234.5, chg: +1.84 },
@@ -2275,23 +2711,41 @@
         { sym: "UNI", price: 11.04, chg: +1.55 },
       ];
 
+      /* FIX: inject live price into ticker for the current coin */
+      function getTickerCoins() {
+        return TICKER_COINS.map((c) => {
+          if (c.sym === symbol.toUpperCase() && marketData.price > 0) {
+            return { ...c, price: marketData.price, chg: marketData.change };
+          }
+          return c;
+        });
+      }
+
       function buildTickerItem(c) {
         const isUp = c.chg >= 0;
         const chgClass = isUp ? "t-up" : "t-dn";
         const chgSign = isUp ? "+" : "";
+        const priceStr =
+          c.price >= 1
+            ? c.price.toLocaleString("en-US", {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2,
+              })
+            : c.price.toFixed(4);
         return `<span class="ticker-item">
           <span class="t-sym">${c.sym}</span>
-          <span class="t-price">$${c.price >= 1 ? c.price.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : c.price.toFixed(4)}</span>
+          <span class="t-price">$${priceStr}</span>
           <span class="${chgClass}">${chgSign}${c.chg.toFixed(2)}%</span>
         </span><span class="ticker-sep">|</span>`;
       }
 
-      (function initTicker() {
+      function initTicker() {
         const inner = document.getElementById("tickerInner");
-        // Build one set, then duplicate for seamless CSS loop
-        const half = TICKER_COINS.map(buildTickerItem).join("");
-        inner.innerHTML = half + half; // FIX: duplicate = seamless 50% translateX loop
-      })();
+        const half = getTickerCoins().map(buildTickerItem).join("");
+        inner.innerHTML = half + half; // duplicate for seamless loop
+      }
+
+      initTicker();
 
       /* ═══════════════════════════════════════════
          TRADINGVIEW CHART
@@ -2342,7 +2796,6 @@
         s.type = "text/javascript";
         s.src = src;
         s.async = true;
-        // FIX: use textContent instead of innerHTML for script data
         s.textContent = JSON.stringify(config);
         wrap.appendChild(inner);
         wrap.appendChild(s);
@@ -2399,7 +2852,8 @@
          FORMAT HELPERS
          ═══════════════════════════════════════════ */
       function fmt(n) {
-        if (n === null || n === undefined || n === "" || isNaN(n)) return "—";
+        if (n === null || n === undefined || n === "" || isNaN(n) || n === 0)
+          return "—";
         const num = parseFloat(n);
         if (num >= 1000)
           return (
@@ -2424,6 +2878,17 @@
         return "—";
       }
 
+      /* FIX: compact formatter for large numbers (mcap/volume) */
+      function fmtCompact(n) {
+        const num = parseFloat(n);
+        if (isNaN(num) || num <= 0) return "N/A";
+        if (num >= 1e12) return "$" + (num / 1e12).toFixed(2) + "T";
+        if (num >= 1e9) return "$" + (num / 1e9).toFixed(2) + "B";
+        if (num >= 1e6) return "$" + (num / 1e6).toFixed(2) + "M";
+        if (num >= 1e3) return "$" + (num / 1e3).toFixed(2) + "K";
+        return "$" + num.toLocaleString("en-US");
+      }
+
       function fmtPct(n) {
         const v = parseFloat(n);
         if (isNaN(v)) return "—";
@@ -2431,19 +2896,47 @@
       }
 
       /* ═══════════════════════════════════════════
-         AI PROMPT
+         FIX: AI PROMPT — now uses live marketData object,
+         not stale URL param strings
          ═══════════════════════════════════════════ */
       function buildAiPrompt() {
-        return `You are a professional cryptocurrency market analyst.
+        /* FIX: read from live marketData, not URL param variables */
+        const livePrice = marketData.price;
+        const liveChange = marketData.change;
+        const liveMcap = marketData.mcap;
+        const liveVolume = marketData.volume;
+        const liveHigh = marketData.high24h;
+        const liveLow = marketData.low24h;
+        const dataAge = marketData.lastFetch
+          ? `${Math.round((Date.now() - marketData.lastFetch.getTime()) / 1000)}s ago`
+          : "unknown";
+
+        /* FIX: validate price is non-zero before building prompt */
+        if (livePrice <= 0) {
+          throw new Error(
+            "Market price data is unavailable. Cannot perform AI analysis without a valid current price.",
+          );
+        }
+
+        return `You are a professional cryptocurrency market analyst with access to real-time market data.
 Analyse the asset below and return ONLY a valid JSON object — no markdown, no text outside the JSON.
 
 Asset:
 - Name: ${coinName}
 - Symbol: ${symbol}
-- Current Price: ${price} USD
-- 24h Change: ${change}%
-- Market Cap: ${mcap} USD
+- Current Price: ${livePrice} USD
+- 24h Change: ${liveChange.toFixed(4)}%
+- Market Cap: ${liveMcap > 0 ? fmtCompact(liveMcap) + " ($" + liveMcap + ")" : "Unknown"}
+- 24h Volume: ${liveVolume > 0 ? fmtCompact(liveVolume) + " ($" + liveVolume + ")" : "Unknown"}
+- 24h High: ${liveHigh > 0 ? liveHigh + " USD" : "Unknown"}
+- 24h Low: ${liveLow > 0 ? liveLow + " USD" : "Unknown"}
 - Exchange: Binance
+- Data Freshness: ${dataAge}
+
+Important context:
+- The 24h change is ${liveChange >= 0 ? "positive (+" + liveChange.toFixed(2) + "%)" : "negative (" + liveChange.toFixed(2) + "%)"}
+- ${Math.abs(liveChange) > 5 ? "This is a significant daily move — weight your risk and momentum scores accordingly." : "This is a moderate daily move."}
+- Price predictions MUST be realistic and based on the exact current price of ${livePrice} USD.
 
 Return EXACTLY this schema (all fields required):
 {
@@ -2456,7 +2949,7 @@ Return EXACTLY this schema (all fields required):
   "volatility_score": <integer 0-100>,
   "support": <number>,
   "resistance": <number>,
-  "summary": "<2-3 sentence analysis mentioning price, trend, and key risk>",
+  "summary": "<2-3 sentence analysis mentioning exact price, trend, and key risk>",
   "predictions": {
     "short": { "horizon": "24h", "price_low": <number>, "price_target": <number>, "price_high": <number>, "change_pct": <number>, "confidence": <integer 0-100> },
     "mid":   { "horizon": "7d",  "price_low": <number>, "price_target": <number>, "price_high": <number>, "change_pct": <number>, "confidence": <integer 0-100> },
@@ -2468,10 +2961,12 @@ Return EXACTLY this schema (all fields required):
 }
 
 Rules:
-- key_indicators: exactly 6 — RSI, MACD, Moving Average, Volume, Bollinger Bands, + 1 more.
+- key_indicators: exactly 6 — RSI, MACD, Moving Average, Volume, Bollinger Bands, + 1 contextual indicator.
 - strength: bullish=50-100, bearish=0-50, neutral≈50.
-- All prices must be realistic and close to ${price} USD.
-- momentum: strong bullish=75-90, strong bearish=10-25.`;
+- ALL price predictions MUST be numerically close to ${livePrice} USD — no order-of-magnitude errors.
+- support must be below ${livePrice}, resistance must be above ${livePrice}.
+- momentum: strong bullish=75-90, strong bearish=10-25.
+- If 24h change > 5%, bias sentiment bullish; if < -5%, bias bearish.`;
       }
 
       /* ═══════════════════════════════════════════
@@ -2484,6 +2979,9 @@ Rules:
           );
         }
 
+        /* FIX: build prompt (throws if price is invalid) */
+        const prompt = buildAiPrompt();
+
         const resp = await fetch(GITHUB_MODELS_ENDPOINT, {
           method: "POST",
           headers: {
@@ -2492,15 +2990,15 @@ Rules:
           },
           body: JSON.stringify({
             model: GPT_MODEL,
-            temperature: 0.3,
-            max_tokens: 1200,
+            temperature: 0.25, // slightly lower = more factual
+            max_tokens: 1400,
             messages: [
               {
                 role: "system",
                 content:
-                  "You are a professional crypto market analyst. Respond ONLY with valid JSON — no prose, no markdown, no code fences.",
+                  "You are a professional crypto market analyst. Respond ONLY with valid JSON — no prose, no markdown, no code fences. All price values must be realistic and numerically close to the provided current price.",
               },
-              { role: "user", content: buildAiPrompt() },
+              { role: "user", content: prompt },
             ],
           }),
         });
@@ -2514,8 +3012,50 @@ Rules:
 
         const data = await resp.json();
         const raw = data?.choices?.[0]?.message?.content || "";
-        const clean = raw.replace(/```json|```/gi, "").trim();
-        return JSON.parse(clean);
+
+        /* FIX: robust JSON extraction — strip any accidental fences */
+        const clean = raw.replace(/^```(?:json)?|```$/gim, "").trim();
+
+        let parsed;
+        try {
+          parsed = JSON.parse(clean);
+        } catch (e) {
+          /* FIX: try to extract JSON object if there's surrounding text */
+          const match = clean.match(/\{[\s\S]*\}/);
+          if (match) {
+            parsed = JSON.parse(match[0]);
+          } else {
+            throw new Error(
+              "Failed to parse AI response as JSON. Raw: " +
+                clean.slice(0, 200),
+            );
+          }
+        }
+
+        /* FIX: sanity-check returned prices — if wildly off, warn but continue */
+        const lp = marketData.price;
+        ["short", "mid", "long"].forEach((h) => {
+          const pred = parsed.predictions?.[h];
+          if (!pred) return;
+          ["price_low", "price_target", "price_high"].forEach((k) => {
+            const v = parseFloat(pred[k]);
+            if (isNaN(v) || v <= 0) {
+              console.warn(`[CryptoNex AI] Invalid ${h}.${k}:`, v, "— zeroing");
+              pred[k] = lp; // fallback to current price
+            } else if (v > lp * 10 || v < lp * 0.01) {
+              console.warn(
+                `[CryptoNex AI] Suspicious ${h}.${k}:`,
+                v,
+                "vs current",
+                lp,
+                "— clamping",
+              );
+              pred[k] = lp; // clamp wildly wrong values
+            }
+          });
+        });
+
+        return parsed;
       }
 
       /* ═══════════════════════════════════════════
@@ -2529,18 +3069,13 @@ Rules:
         return html;
       }
 
-      /* FIX: corrected momentum gauge SVG — proper arc math */
       function renderMomentumGauge(momentum) {
         const m = Math.max(0, Math.min(100, momentum || 50));
-        // needle: 0→left(-90deg), 50→up(0deg), 100→right(90deg)
         const angle = (m / 100) * 180 - 90;
         const color =
           m >= 60 ? "var(--green)" : m <= 40 ? "var(--red)" : "var(--accent)";
         const label = m >= 65 ? "BULLISH" : m <= 35 ? "BEARISH" : "NEUTRAL";
-
-        // Arc: center=(50,50), radius=36, sweep from left to right over 180°
-        // Full arc circumference for r=36 semicircle ≈ π*36 ≈ 113.1
-        const arcLen = Math.PI * 36; // ~113.1
+        const arcLen = Math.PI * 36;
         const fillLen = (m / 100) * arcLen;
         const gapLen = arcLen - fillLen;
 
@@ -2553,21 +3088,13 @@ Rules:
               <stop offset="100%" stop-color="var(--green)"/>
             </linearGradient>
           </defs>
-          <!-- background arc -->
-          <path d="M 14 50 A 36 36 0 0 1 86 50"
-            fill="none" stroke="rgba(255,255,255,0.08)" stroke-width="8" stroke-linecap="round"/>
-          <!-- filled arc -->
-          <path d="M 14 50 A 36 36 0 0 1 86 50"
-            fill="none" stroke="url(#mgGrad)" stroke-width="8" stroke-linecap="round"
-            stroke-dasharray="${fillLen.toFixed(1)} ${gapLen.toFixed(1)}"
-            pathLength="${arcLen.toFixed(1)}"/>
-          <!-- needle -->
+          <path d="M 14 50 A 36 36 0 0 1 86 50" fill="none" stroke="rgba(255,255,255,0.08)" stroke-width="8" stroke-linecap="round"/>
+          <path d="M 14 50 A 36 36 0 0 1 86 50" fill="none" stroke="url(#mgGrad)" stroke-width="8" stroke-linecap="round"
+            stroke-dasharray="${fillLen.toFixed(1)} ${gapLen.toFixed(1)}" pathLength="${arcLen.toFixed(1)}"/>
           <g transform="translate(50,50) rotate(${angle})">
-            <line x1="0" y1="0" x2="0" y2="-30"
-              stroke="${color}" stroke-width="2.5" stroke-linecap="round"/>
+            <line x1="0" y1="0" x2="0" y2="-30" stroke="${color}" stroke-width="2.5" stroke-linecap="round"/>
           </g>
           <circle cx="50" cy="50" r="4" fill="${color}"/>
-          <!-- edge labels -->
           <text x="6"  y="57" font-size="7" fill="var(--red)"   font-family="Space Mono,monospace" text-anchor="middle">B</text>
           <text x="94" y="57" font-size="7" fill="var(--green)" font-family="Space Mono,monospace" text-anchor="middle">B</text>
         </svg>
@@ -2575,13 +3102,11 @@ Rules:
         <div class="momentum-sub">${m}/100</div>`;
       }
 
-      /* FIX: corrected price chart — consistent x-coordinates for pred dots & polyline */
-      function renderPriceChart(currentPriceStr, predictions) {
-        const current = parseFloat(currentPriceStr) || 50000;
-        const ch24 = parseFloat(change) || 0;
+      function renderPriceChart(currentPrice, predictions) {
+        const current = parseFloat(currentPrice) || marketData.price || 50000;
+        const ch24 = marketData.change || 0; // FIX: use live change
         const p = predictions || {};
 
-        // Synthesise 8 historical points (index 0-7), index 7 = current
         const histCount = 8;
         const priceAtDayAgo = current / (1 + ch24 / 100);
         const histPoints = [];
@@ -2592,15 +3117,13 @@ Rules:
             priceAtDayAgo + (current - priceAtDayAgo) * frac + current * jitter,
           );
         }
-        histPoints[histCount - 1] = current; // ensure exact current price at end
+        histPoints[histCount - 1] = current;
 
         const t24 = p.short?.price_target || current * 1.02;
         const t7d = p.mid?.price_target || current * 1.05;
         const t30d = p.long?.price_target || current * 1.1;
 
-        // FIX: prediction polyline starts at current (same point as last hist point)
         const predPoints = [current, t24, t7d, t30d];
-
         const allPrices = [...histPoints, t24, t7d, t30d];
         const minP = Math.min(...allPrices) * 0.996;
         const maxP = Math.max(...allPrices) * 1.004;
@@ -2614,8 +3137,6 @@ Rules:
           PAD_B = 20;
         const plotW = W - PAD_L - PAD_R;
         const plotH = H - PAD_T - PAD_B;
-
-        // History occupies left 55%, predictions right 45%
         const splitX = PAD_L + plotW * 0.55;
 
         function histX(i) {
@@ -2624,21 +3145,17 @@ Rules:
         function predX(i) {
           return splitX + (i / (predPoints.length - 1)) * plotW * 0.45;
         }
-        function yOf(p) {
-          return PAD_T + plotH - ((p - minP) / range) * plotH;
+        function yOf(pv) {
+          return PAD_T + plotH - ((pv - minP) / range) * plotH;
         }
 
-        const nowX = splitX; // FIX: nowX = start of prediction segment = end of history
-
+        const nowX = splitX;
         const histCoords = histPoints
-          .map((p, i) => histX(i) + "," + yOf(p))
+          .map((pv, i) => histX(i) + "," + yOf(pv))
           .join(" ");
-        // FIX: predCoords uses predX which is consistent with dot coordinates
         const predCoords = predPoints
-          .map((p, i) => predX(i) + "," + yOf(p))
+          .map((pv, i) => predX(i) + "," + yOf(pv))
           .join(" ");
-
-        // Area fills
         const histArea =
           PAD_L +
           "," +
@@ -2659,14 +3176,12 @@ Rules:
           (PAD_L + plotW) +
           "," +
           (PAD_T + plotH);
-
         const isBull = t30d >= current;
         const predColor = isBull ? "var(--green)" : "var(--red)";
         const predFill = isBull
           ? "rgba(34,197,94,0.07)"
           : "rgba(248,113,113,0.07)";
 
-        // Y-axis labels
         const midP = (minP + maxP) / 2;
         const yLabels = [
           { price: maxP, y: PAD_T + 8 },
@@ -2681,7 +3196,6 @@ Rules:
           )
           .join("");
 
-        // FIX: prediction dots now use consistent predX() coordinates
         const dotData = [
           { x: nowX, y: yOf(current), label: "NOW", color: "var(--accent)" },
           { x: predX(1), y: yOf(t24), label: "24H", color: "var(--blue)" },
@@ -2712,22 +3226,20 @@ Rules:
         <div class="chart-legend">
           <div class="chart-legend-item">
             <div style="width:16px;height:2px;border-radius:1px;background:var(--text-muted)"></div>
-            HISTORICAL
+            HISTORICAL (24H TREND)
           </div>
           <div class="chart-legend-item">
             <div style="width:16px;height:0;border-top:2px dashed ${predColor}"></div>
-            PREDICTED
+            AI PREDICTED
           </div>
         </div>`;
       }
 
-      /* FIX: corrected indicator bars — bearish uses right-anchor, consistent width calc */
       function renderIndicatorBars(indicators) {
         return (indicators || [])
           .map((ind) => {
             const sig = (ind.signal || "neutral").toLowerCase();
             const strength = Math.max(0, Math.min(100, ind.strength || 50));
-            // barWidth: how far to extend from center (0–50%)
             let barPct;
             if (sig === "bullish")
               barPct = (((strength - 50) / 50) * 50).toFixed(1);
@@ -2752,7 +3264,7 @@ Rules:
       }
 
       /* ═══════════════════════════════════════════
-         RENDER RESULT
+         RENDER AI RESULT
          ═══════════════════════════════════════════ */
       function setAiResult(analysis) {
         const a = analysis;
@@ -2795,24 +3307,6 @@ Rules:
             ];
             const cc = changeClass(pred.change_pct);
             const arrow = cc === "up" ? "▲" : cc === "down" ? "▼" : "→";
-            const distR =
-              a.resistance && price !== "0"
-                ? fmtPct(
-                    ((parseFloat(a.resistance) - parseFloat(price)) /
-                      parseFloat(price)) *
-                      100,
-                  )
-                : "—";
-            const distS =
-              a.support && price !== "0"
-                ? fmtPct(
-                    ((parseFloat(a.support) - parseFloat(price)) /
-                      parseFloat(price)) *
-                      100,
-                  )
-                : "—";
-            void distR;
-            void distS; // used later
             return `
           <div>
             <div class="pred-card-bg ${cls}"></div>
@@ -2841,22 +3335,28 @@ Rules:
           })
           .join("");
 
-        const pNum = parseFloat(price);
+        /* FIX: use live price for S/R distance calculation */
+        const liveP = marketData.price;
         const distR =
-          !isNaN(parseFloat(a.resistance)) && pNum > 0
-            ? fmtPct(((parseFloat(a.resistance) - pNum) / pNum) * 100)
+          !isNaN(parseFloat(a.resistance)) && liveP > 0
+            ? fmtPct(((parseFloat(a.resistance) - liveP) / liveP) * 100)
             : "—";
         const distS =
-          !isNaN(parseFloat(a.support)) && pNum > 0
-            ? fmtPct(((parseFloat(a.support) - pNum) / pNum) * 100)
+          !isNaN(parseFloat(a.support)) && liveP > 0
+            ? fmtPct(((parseFloat(a.support) - liveP) / liveP) * 100)
             : "—";
+
+        /* FIX: data freshness note in analysis header */
+        const dataNote =
+          marketData.source === "live"
+            ? `<span style="color:var(--green);font-family:var(--font-mono);font-size:9px;letter-spacing:.06em">● Live data · ${marketData.lastFetch.toLocaleTimeString()}</span>`
+            : `<span style="color:var(--accent);font-family:var(--font-mono);font-size:9px;letter-spacing:.06em">⚡ Fallback data</span>`;
 
         document.getElementById("aiContentArea").innerHTML = `
         <div class="ai-dashboard">
 
           <!-- ROW 1: Signal | Confidence | Risk | Momentum -->
           <div class="ai-row-top">
-
             <div>
               <div class="ai-cell-label">
                 <svg width="9" height="9" viewBox="0 0 24 24" fill="none"><path d="M12 20h9M16.5 3.5a2.121 2.121 0 013 3L7 19l-4 1 1-4L16.5 3.5z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
@@ -2882,7 +3382,7 @@ Rules:
               </div>
               <div class="confidence-wrap">
                 <div class="confidence-pct" id="confPct">0%</div>
-                <div class="confidence-sub">Model certainty</div>
+                <div class="confidence-sub">Model certainty · ${dataNote}</div>
                 <div class="confidence-bar-track">
                   <div class="confidence-bar-fill" id="confBar"></div>
                 </div>
@@ -2922,9 +3422,7 @@ Rules:
           </div>
 
           <!-- ROW 2: Price Predictions -->
-          <div class="ai-row-predictions">
-            ${predRows}
-          </div>
+          <div class="ai-row-predictions">${predRows}</div>
 
           <!-- ROW 3: Price Chart + Support/Resistance -->
           <div class="ai-row-chart">
@@ -2934,7 +3432,7 @@ Rules:
                 PRICE PREDICTION CHART
               </div>
               <div class="price-chart-wrap">
-                ${renderPriceChart(price, p)}
+                ${renderPriceChart(marketData.price, p)}
               </div>
             </div>
 
@@ -2945,24 +3443,15 @@ Rules:
               </div>
               <div class="sr-list">
                 <div class="sr-item resistance">
-                  <div>
-                    <div class="sr-label">Resistance</div>
-                    <div class="sr-price">${fmt(a.resistance)}</div>
-                  </div>
+                  <div><div class="sr-label">Resistance</div><div class="sr-price">${fmt(a.resistance)}</div></div>
                   <div class="sr-dist">${distR}</div>
                 </div>
                 <div class="sr-item" style="background:var(--accent-subtle);border-color:var(--accent-border)">
-                  <div>
-                    <div class="sr-label" style="color:var(--accent)">Current</div>
-                    <div class="sr-price">${fmt(price)}</div>
-                  </div>
+                  <div><div class="sr-label" style="color:var(--accent)">Current</div><div class="sr-price">${fmt(marketData.price)}</div></div>
                   <div class="sr-dist" style="color:var(--accent)">NOW</div>
                 </div>
                 <div class="sr-item support">
-                  <div>
-                    <div class="sr-label">Support</div>
-                    <div class="sr-price">${fmt(a.support)}</div>
-                  </div>
+                  <div><div class="sr-label">Support</div><div class="sr-price">${fmt(a.support)}</div></div>
                   <div class="sr-dist">${distS}</div>
                 </div>
               </div>
@@ -3008,10 +3497,8 @@ Rules:
             const lbl = document.getElementById("confPct");
             if (bar) bar.style.width = pct + "%";
             if (lbl) lbl.textContent = pct + "%";
-
             const vBar = document.getElementById("volatBar");
             if (vBar) vBar.style.width = (a.volatility_score || 50) + "%";
-
             document
               .querySelectorAll(".indicator-bar-fill[data-target]")
               .forEach((el) => {
@@ -3025,34 +3512,32 @@ Rules:
           }, 120);
         });
 
-        /* ── Typewriter summary — FIX: uses requestAnimationFrame loop, no leak ── */
+        /* ── Typewriter summary ── */
         const summaryEl = document.getElementById("aiSummaryText");
         if (summaryEl && a.summary) typewriteSummary(summaryEl, a.summary);
 
         /* ── Timestamp ── */
         document.getElementById("aiTimestamp").style.display = "flex";
         document.getElementById("aiTimestampText").textContent =
-          "Last analysis: " + new Date().toLocaleString();
+          `Last analysis: ${new Date().toLocaleString()} · Price at analysis: ${fmt(marketData.price)}`;
       }
 
-      /* FIX: typewriter using rAF-based loop — no recursive setTimeout leak */
+      /* ── Typewriter ── */
       function typewriteSummary(el, text) {
         el.innerHTML = "";
         const cursor = document.createElement("span");
         cursor.className = "typewriter-cursor";
         el.appendChild(cursor);
-
-        let i = 0;
-        const CHAR_DELAY = 18; // ms per character
-        let lastTime = 0;
-
+        let i = 0,
+          lastTime = 0;
+        const CHAR_DELAY = 18;
         function step(ts) {
           if (ts - lastTime >= CHAR_DELAY) {
             if (i < text.length) {
               el.insertBefore(document.createTextNode(text[i++]), cursor);
               lastTime = ts;
             } else {
-              cursor.remove(); // FIX: remove cursor when done
+              cursor.remove();
               return;
             }
           }
@@ -3083,7 +3568,7 @@ Rules:
 
       function setAiLoading() {
         const steps = [
-          "Fetching market context",
+          "Fetching live market data",
           "Building analysis prompt",
           "Running GPT-4o inference",
           "Computing price predictions",
@@ -3098,7 +3583,7 @@ Rules:
             <div class="ai-scan-core">🧠</div>
           </div>
           <div class="ai-loading-title">Analysing ${coinName}</div>
-          <div class="ai-loading-sub">GPT-4o is computing price predictions, trend analysis, and technical indicators…</div>
+          <div class="ai-loading-sub">GPT-4o is computing price predictions using <strong style="color:var(--${marketData.source === "live" ? "green" : "accent"})">${marketData.source === "live" ? "live" : "cached"}</strong> market data at <strong style="color:var(--accent)">${fmt(marketData.price)}</strong>…</div>
           <div class="ai-loading-steps">
             ${steps
               .map(
@@ -3112,8 +3597,7 @@ Rules:
         </div>`;
         document.getElementById("aiTimestamp").style.display = "none";
 
-        /* animate steps */
-        const timers = steps.map((_, i) =>
+        steps.forEach((_, i) => {
           setTimeout(() => {
             if (i > 0) {
               const prev = document.getElementById("aiStep" + (i - 1));
@@ -3128,30 +3612,36 @@ Rules:
               curr.classList.add("active");
               curr.querySelector(".step-indicator").textContent = "▶";
             }
-          }, i * 700),
-        );
-
-        return timers; // caller can cancel if needed
+          }, i * 700);
+        });
       }
 
       async function runAiAnalysis() {
         if (aiState === "loading") return;
-        aiState = "loading";
 
+        /* FIX: refresh market data immediately before running analysis */
+        await fetchLiveMarketData();
+
+        /* FIX: validate we have a usable price before proceeding */
+        if (marketData.price <= 0) {
+          setAiError(
+            "Cannot run analysis: current price is unavailable. Please check your internet connection and try again.",
+          );
+          return;
+        }
+
+        aiState = "loading";
         const btn = document.getElementById("aiRefreshBtn");
         btn.disabled = true;
         btn.classList.add("loading");
         btn.innerHTML = `
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
             <path d="M23 4v6h-6M1 20v-6h6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-            <path d="M3.51 9a9 9 0 0114.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0020.49 15"
-              stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M3.51 9a9 9 0 0114.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0020.49 15" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
           </svg>
           Analysing…`;
 
         setAiLoading();
-
-        /* FIX: scroll to AI section for UX feedback */
         document
           .getElementById("aiSection")
           .scrollIntoView({ behavior: "smooth", block: "start" });
@@ -3173,12 +3663,43 @@ Rules:
           btn.innerHTML = `
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
               <path d="M23 4v6h-6M1 20v-6h6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-              <path d="M3.51 9a9 9 0 0114.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0020.49 15"
-                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M3.51 9a9 9 0 0114.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0020.49 15" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
             </svg>
             Re-analyse`;
         }
       }
+
+      /* ═══════════════════════════════════════════
+         FIX: BOOTSTRAP — fetch live data on page load,
+         then set up auto-refresh every 60 seconds.
+         ═══════════════════════════════════════════ */
+      (async function bootstrap() {
+        /* Initial fetch */
+        await fetchLiveMarketData();
+
+        /* Rebuild ticker with live price */
+        initTicker();
+
+        /* Auto-refresh every 60 seconds */
+        refreshTimer = setInterval(async () => {
+          await fetchLiveMarketData();
+          initTicker(); // update ticker with fresh prices
+        }, 60_000);
+      })();
+
+      /* FIX: clean up interval if page is hidden/unloaded */
+      document.addEventListener("visibilitychange", () => {
+        if (document.hidden) {
+          clearInterval(refreshTimer);
+        } else {
+          /* refresh immediately when tab becomes visible again */
+          fetchLiveMarketData().then(initTicker);
+          refreshTimer = setInterval(async () => {
+            await fetchLiveMarketData();
+            initTicker();
+          }, 60_000);
+        }
+      });
     </script>
   </body>
 </html>
