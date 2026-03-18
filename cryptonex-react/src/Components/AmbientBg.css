@@ -1,0 +1,135 @@
+.ambient-bg {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+/* Dashboard orbs */
+.orb {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(120px);
+  animation: drift 25s ease-in-out infinite;
+}
+[data-theme="dark"] .orb-1 {
+  width: 800px;
+  height: 800px;
+  background: radial-gradient(circle, rgba(251, 176, 23, 0.07), transparent);
+  top: -250px;
+  right: -150px;
+}
+[data-theme="dark"] .orb-2 {
+  width: 600px;
+  height: 600px;
+  background: radial-gradient(circle, rgba(180, 80, 0, 0.06), transparent);
+  bottom: 0;
+  left: -200px;
+  animation-delay: -8s;
+}
+[data-theme="dark"] .orb-3 {
+  width: 500px;
+  height: 500px;
+  background: radial-gradient(circle, rgba(251, 176, 23, 0.04), transparent);
+  top: 40%;
+  left: 40%;
+  animation-delay: -16s;
+}
+[data-theme="light"] .orb-1 {
+  width: 700px;
+  height: 700px;
+  background: radial-gradient(circle, rgba(201, 140, 10, 0.08), transparent);
+  top: -200px;
+  right: -100px;
+}
+[data-theme="light"] .orb-2 {
+  width: 500px;
+  height: 500px;
+  background: radial-gradient(circle, rgba(255, 200, 50, 0.06), transparent);
+  bottom: 0;
+  left: -100px;
+  animation-delay: -8s;
+}
+[data-theme="light"] .orb-3 {
+  display: none;
+}
+
+.noise-overlay {
+  position: absolute;
+  inset: 0;
+  opacity: 0.025;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size: 256px;
+}
+.grid-overlay {
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.012) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.012) 1px, transparent 1px);
+  background-size: 64px 64px;
+}
+[data-theme="light"] .grid-overlay {
+  background-image:
+    linear-gradient(rgba(0, 0, 0, 0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0, 0, 0, 0.04) 1px, transparent 1px);
+}
+
+/* Home orbs */
+.a-orb {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(130px);
+  animation: orbFloat 22s ease-in-out infinite;
+}
+.a-orb-1 {
+  width: 900px;
+  height: 900px;
+  top: -300px;
+  right: -220px;
+  background: radial-gradient(
+    circle,
+    rgba(251, 176, 23, 0.075),
+    transparent 70%
+  );
+}
+.a-orb-2 {
+  width: 700px;
+  height: 700px;
+  bottom: -150px;
+  left: -200px;
+  background: radial-gradient(circle, rgba(180, 80, 0, 0.06), transparent 70%);
+  animation-delay: -8s;
+}
+.a-orb-3 {
+  width: 500px;
+  height: 500px;
+  top: 40%;
+  left: 42%;
+  background: radial-gradient(
+    circle,
+    rgba(251, 176, 23, 0.04),
+    transparent 70%
+  );
+  animation-delay: -16s;
+}
+.a-noise {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  opacity: 0.025;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size: 256px;
+}
+.a-grid {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.01) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.01) 1px, transparent 1px);
+  background-size: 72px 72px;
+}

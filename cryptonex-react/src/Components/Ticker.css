@@ -1,0 +1,91 @@
+.ticker-wrap {
+  position: relative;
+  z-index: 200;
+  display: flex;
+  align-items: center;
+  height: 36px;
+  background: var(--ticker-bg);
+  border-bottom: 1px solid var(--ticker-border);
+  overflow: hidden;
+}
+[data-theme="light"] .ticker-wrap {
+  background: #1a1200;
+  border-bottom-color: rgba(201, 140, 10, 0.4);
+}
+.ticker-label {
+  flex-shrink: 0;
+  font-family: var(--font-mono);
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  background: #fbb017;
+  color: #000;
+  padding: 0 14px;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  z-index: 2;
+}
+.ticker-track {
+  flex: 1;
+  overflow: hidden;
+  position: relative;
+}
+.ticker-track::before,
+.ticker-track::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 60px;
+  z-index: 1;
+  pointer-events: none;
+}
+.ticker-track::before {
+  left: 0;
+  background: linear-gradient(90deg, var(--ticker-bg), transparent);
+}
+.ticker-track::after {
+  right: 0;
+  background: linear-gradient(-90deg, var(--ticker-bg), transparent);
+}
+[data-theme="light"] .ticker-track::before {
+  background: linear-gradient(90deg, #1a1200, transparent);
+}
+[data-theme="light"] .ticker-track::after {
+  background: linear-gradient(-90deg, #1a1200, transparent);
+}
+.ticker-inner {
+  display: flex;
+  align-items: center;
+  white-space: nowrap;
+  animation: tickerScroll 60s linear infinite;
+  will-change: transform;
+}
+.ticker-inner:hover {
+  animation-play-state: paused;
+}
+.ticker-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 0 20px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.55);
+  white-space: nowrap;
+}
+.ticker-sym {
+  color: #fbb017;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+}
+.ticker-price {
+  color: rgba(255, 255, 255, 0.75);
+}
+.ticker-change-pos {
+  color: #22c55e;
+}
+.ticker-change-neg {
+  color: #f87171;
+}
